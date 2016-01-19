@@ -5,6 +5,23 @@
     <title>Document</title>
 </head>
 <body>
+
+    {% if messages %}
+
+        <ul class="meesages">
+            {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                    {% if 'html_tag' in message.tags %}
+                        {{ message|safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
     <h1>{{ title }} is working</h1>
     <p>{{ instance.title }}</p>
     <p>{{ instance.content }}</p>
