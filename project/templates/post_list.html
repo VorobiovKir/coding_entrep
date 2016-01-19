@@ -1,12 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ title }} is working</h1>
-    {% for obj in object_list %}
-        <p><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></p>
-        <p>{{ obj.content }}</p>
-        <p>{{ obj.timestamp }}</p>
-        <p>{{ obj.updated }}</p>
-        <p>{{ obj.id }}</p>
-        <hr>
-    {% endfor %}
+    <div class="col-sm-8 col-sm-offset-2">
+        <h1>{{ title }}</h1>
+        <div class="row">
+        {% for obj in object_list %}
+
+        <div class="col-sm-6">
+            <div class="thumbnail">
+                <h4>
+                    <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                    <small>{{ obj.timestamp }} ago</small>
+                </h4>
+                <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
+                <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+            </div>
+        </div>
+
+        {% cycle "" "</div><div class='col-sm-12'><hr></div><div class='row'>" %}
+        {% endfor %}
+        </div>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if object_list.has_previous %}
+                    <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                </span>
+
+                {% if object_list.has_next %}
+                    <a href="?{{ page_request_var }}={{ object_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
 {% endblock content %}

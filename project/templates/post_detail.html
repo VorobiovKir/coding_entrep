@@ -11,11 +11,9 @@
 </style>
 
 {% block content %}
-    <h1>{{ title }} is working</h1>
-    <p>{{ instance.title }}</p>
-    <p>{{ instance.content }}</p>
-    <p>{{ instance.timestamp }}</p>
-    <p>{{ instance.updated }}</p>
-    <p>{{ instance.id }}</p>
-    <hr>
+<div class="col-ms-6 col-sm-offset-3">
+    <h1>{{ instance.title }} <small>{{ instance.timestamp }}</small></h1>
+    <p>{{ instance.content|linebreaks }}</p>
+</div>
+
 {% endblock content %}
