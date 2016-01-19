@@ -1,30 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    {% if messages %}
+{% block title %}{{ instance.title }} | {{ block.super }}{% endblock title %}
 
-        <ul class="meesages">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
-                    {% if 'html_tag' in message.tags %}
-                        {{ message|safe }}
-                    {% else %}
-                        {{ message }}
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+<style>
+{% block style %}
+    h1 {
+        color: #777;
+    }
+{% endblock style %}
+</style>
 
-    {% endif %}
-
+{% block content %}
     <h1>{{ title }} is working</h1>
     <p>{{ instance.title }}</p>
     <p>{{ instance.content }}</p>
+    <p>{{ instance.timestamp }}</p>
+    <p>{{ instance.updated }}</p>
+    <p>{{ instance.id }}</p>
     <hr>
-</body>
-</html>
+{% endblock content %}
