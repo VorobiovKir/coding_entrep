@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
+from django.db.models import Q
 
 from urllib import quote_plus
 
@@ -48,6 +50,9 @@ def post_update(request, slug=None):
 
 def post_detail(request, slug=None):
     instance = get_object_or_404(Post, slug=slug)
+    if instance.draft or instance.publish > timezone.now().date():
+        if not request.user.is_staff or not request.user.is_superuser:
+            raise Http404
     share_string = quote_plus(instance.content)
     context = {
         'title': instance.title,
@@ -58,9 +63,22 @@ def post_detail(request, slug=None):
 
 
 def post_list(request):
-    queryset_list = Post.objects.all()   # order_by('-timestamp')
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Post.objects.all()
+    else:
+        queryset_list = Post.objects.lists()
+    # queryset_list = Post.posts.all() !!!
+    # filter(draft=False).filter(publish__lte=timezone.now())  # .all()   # order_by('-timestamp')
 
-    paginator = Paginator(queryset_list, 8)
+    query = request.GET.get('q')
+    if query:
+        queryset_list = queryset_list.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+        ).distinct()
+    paginator = Paginator(queryset_list, 2)
     page_request_var = 'page'
     page = request.GET.get(page_request_var)
     try:

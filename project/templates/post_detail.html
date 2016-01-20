@@ -40,6 +40,8 @@
         <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}&title={{ share_string }}.">Reddit</a>
     </p>
 
+    <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+
 </div>
 
 {% endblock content %}
