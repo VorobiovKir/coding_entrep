@@ -2,39 +2,47 @@
 {% block content %}
     <div class="col-sm-8 col-sm-offset-2">
         <h1>{{ title }}</h1>
-        <div class="row">
-        {% for obj in object_list %}
 
-        <div class="col-sm-6">
-            <div class="thumbnail">
-                <h4>
-                    <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
-                    <small>{{ obj.timestamp }} ago</small>
-                </h4>
-                <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
-                <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+        {% if object_list %}
+
+            <div class="row">
+                {% for obj in object_list %}
+
+                <div class="col-sm-6">
+                    <div class="thumbnail">
+                        {% if obj.image %}
+                            <img src="{{ obj.image.url }}" class="img-responsive">
+                        {% endif %}
+                        <h4>
+                            <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                            <small>{{ obj.timestamp }} ago</small>
+                        </h4>
+                        <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
+                        <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+                    </div>
+                </div>
+
+                {% cycle "" "</div><div class='col-sm-12'><hr></div><div class='row'>" %}
+                {% endfor %}
             </div>
-        </div>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if object_list.has_previous %}
+                        <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}">previous</a>
+                    {% endif %}
 
-        {% cycle "" "</div><div class='col-sm-12'><hr></div><div class='row'>" %}
-        {% endfor %}
-        </div>
+                    <span class="current">
+                        Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                    </span>
 
-        <div class="pagination">
-            <span class="step-links">
-                {% if object_list.has_previous %}
-                    <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}">previous</a>
-                {% endif %}
-
-                <span class="current">
-                    Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                    {% if object_list.has_next %}
+                        <a href="?{{ page_request_var }}={{ object_list.next_page_number }}">next</a>
+                    {% endif %}
                 </span>
-
-                {% if object_list.has_next %}
-                    <a href="?{{ page_request_var }}={{ object_list.next_page_number }}">next</a>
-                {% endif %}
-            </span>
-        </div>
+            </div>
+        {% else %}
+            <div class="col-sm-6 col-sm-offset-3">Object list is Empty</div>
+        {% endif %}
 
     </div>
 {% endblock content %}

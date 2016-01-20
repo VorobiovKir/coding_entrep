@@ -3,13 +3,15 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from urllib import quote_plus
+
 from .models import Post
 from .forms import PostForm
 
 
 # Create your views here.
 def post_create(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         instance = form.save(commit=False)
         print form.cleaned_data.get('title')
@@ -23,9 +25,9 @@ def post_create(request):
     return render(request, 'post_form.html', context)
 
 
-def post_update(request, id=None):
-    instance = get_object_or_404(Post, id=id)
-    form = PostForm(request.POST or None, instance=instance)
+def post_update(request, slug=None):
+    instance = get_object_or_404(Post, slug=slug)
+    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
@@ -39,11 +41,13 @@ def post_update(request, id=None):
     return render(request, 'post_form.html', context)
 
 
-def post_detail(request, id=None):
-    instance = get_object_or_404(Post, id=id)
+def post_detail(request, slug=None):
+    instance = get_object_or_404(Post, slug=slug)
+    share_string = quote_plus(instance.content)
     context = {
         'title': instance.title,
         'instance': instance,
+        'share_string': share_string,
     }
     return render(request, 'post_detail.html', context)
 
@@ -70,8 +74,8 @@ def post_list(request):
     return render(request, 'post_list.html', context)
 
 
-def post_delete(request, id=None):
-    instance = get_object_or_404(Post, id=id)
+def post_delete(request, slug=None):
+    instance = get_object_or_404(Post, slug=slug)
     instance.delete()
     messages.success(request, 'success delete')
     return redirect('posts:list')
