@@ -38,7 +38,9 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'debug_toolbar',
+]
 
 LOCAL_APPS = [
     'posts',
@@ -151,3 +153,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_cdn')
+
+# DEBUG_TOOLBAR_PANELS = [
+#     'debug_toolbar.panels.signals.SignalDebugPanel'
+# ]
